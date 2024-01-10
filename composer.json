@@ -4,7 +4,7 @@
 	"readme": "README.md",
 	"keywords": [],
 	"type": "",
-	"homepage": "${REPO_HTTPS_URL}",
+	"homepage": "${REPO_LINK}",
 	"license": "WTFPL",
 	"authors": [
 		{
@@ -15,8 +15,8 @@
 		}
 	],
 	"support": {
-		"docs": "${REPO_HTTPS_URL}/manual",
-		"issues": "${REPO_HTTPS_URL}/issues"
+		"docs": "${REPO_LINK}/manual",
+		"issues": "${REPO_LINK}/issues"
 	},
 	"require": {
 		"php": "~8.3",
