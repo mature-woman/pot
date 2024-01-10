@@ -3,14 +3,14 @@
 	"description": "${REPO_DESCRIPTION}",
 	"readme": "README.md",
 	"keywords": [],
-	"type": "",
+	"type": "site",
 	"homepage": "https://git.mirzaev.sexy${REPO_LINK}",
 	"license": "WTFPL",
 	"authors": [
 		{
 			"name": "${REPO_OWNER}",
-			"email": "",
-			"homepage": "",
+			"email": "${REPO_OWNER}@gmail.com",
+			"homepage": "${REPO_OWNER}.page",
 			"role": "Programmer"
 		}
 	],
@@ -41,6 +41,6 @@
 		}
 	},
 	"scripts": {
-		"pre-install-cmd": "bash ./install.sh"
+		"pre-install-cmd": "./install.sh"
 	}
 }
