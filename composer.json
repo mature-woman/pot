@@ -1,0 +1,43 @@
+{
+	"name": "${REPO_OWNER}/${REPO_NAME}",
+	"description": "${REPO_DESCRIPTION}",
+	"readme": "README.md",
+	"keywords": [],
+	"type": "",
+	"homepage": "{$REPO_SSH_URL}",
+	"license": "WTFPL",
+	"authors": [
+		{
+			"name": "${REPO_OWNER}",
+			"email": "",
+			"homepage": "",
+			"role": "Programmer"
+		}
+	],
+	"support": {
+		"docs": "{$REPO_SSH_URL}/manual",
+		"issues": "{$REPO_SSH_URL}/issues"
+	},
+	"require": {
+		"php": "~8.3",
+		"ext-sodium": "~8.3",
+		"mirzaev/minimal": "^2.2.0",
+		"mirzaev/accounts": "~1.2.x-dev",
+		"mirzaev/arangodb": "^1.0.0",
+		"triagens/arangodb": "~3.9.x-dev",
+		"twig/twig": "^3.4"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~9.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"{$REPO_OWNER}\\{$REPO_NAME}\\": "{$REPO_OWNER}/{$REPO_NAME}/system"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"{$REPO_OWNER}\\{$REPO_NAME}\\tests\\": "{$REPO_OWNER}/{$REPO_NAME}/tests"
+		}
+	}
+}
