@@ -4,7 +4,7 @@
 	"readme": "README.md",
 	"keywords": [],
 	"type": "",
-	"homepage": "${REPO_LINK}",
+	"homepage": "https://git.mirzaev.sexy${REPO_LINK}",
 	"license": "WTFPL",
 	"authors": [
 		{
@@ -15,8 +15,8 @@
 		}
 	],
 	"support": {
-		"docs": "${REPO_LINK}/manual",
-		"issues": "${REPO_LINK}/issues"
+		"docs": "https://git.mirzaev.sexy${REPO_LINK}/manual",
+		"issues": "https://git.mirzaev.sexy${REPO_LINK}/issues"
 	},
 	"require": {
 		"php": "~8.3",
