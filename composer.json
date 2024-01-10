@@ -10,7 +10,7 @@
 		{
 			"name": "${REPO_OWNER}",
 			"email": "${REPO_OWNER}@gmail.com",
-			"homepage": "${REPO_OWNER}.page",
+			"homepage": "https://${REPO_OWNER}.page",
 			"role": "Programmer"
 		}
 	],
@@ -41,6 +41,6 @@
 		}
 	},
 	"scripts": {
-		"pre-install-cmd": "./install.sh"
+		"pre-update-cmd": "./install.sh"
 	}
 }
