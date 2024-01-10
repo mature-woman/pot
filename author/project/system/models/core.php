@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME}\models;
+namespace ${REPO_OWNER}\${REPO_NAME}\models;
 
 // Framework for PHP
 use mirzaev\minimal\model;
@@ -22,8 +22,8 @@ use exception;
 /**
  * Core of models
  *
- * @package {$REPO_OWNER}\{$REPO_NAME}\controllers
- * @author {$REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\controllers
+ * @author ${REPO_OWNER} < mail >
  */
 class core extends model
 {

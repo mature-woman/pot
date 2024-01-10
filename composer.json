@@ -4,7 +4,7 @@
 	"readme": "README.md",
 	"keywords": [],
 	"type": "",
-	"homepage": "{$REPO_SSH_URL}",
+	"homepage": "${REPO_HTTPS_URL}",
 	"license": "WTFPL",
 	"authors": [
 		{
@@ -15,8 +15,8 @@
 		}
 	],
 	"support": {
-		"docs": "{$REPO_SSH_URL}/manual",
-		"issues": "{$REPO_SSH_URL}/issues"
+		"docs": "${REPO_HTTPS_URL}/manual",
+		"issues": "${REPO_HTTPS_URL}/issues"
 	},
 	"require": {
 		"php": "~8.3",
@@ -32,12 +32,15 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"{$REPO_OWNER}\\{$REPO_NAME}\\": "{$REPO_OWNER}/{$REPO_NAME}/system"
+			"${REPO_OWNER}\\${REPO_NAME}\\": "${REPO_OWNER}/${REPO_NAME}/system"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"{$REPO_OWNER}\\{$REPO_NAME}\\tests\\": "{$REPO_OWNER}/{$REPO_NAME}/tests"
+			"${REPO_OWNER}\\${REPO_NAME}\\tests\\": "${REPO_OWNER}/${REPO_NAME}/tests"
 		}
+	},
+	"scripts": {
+		"pre-install-cmd": "bash ./install.sh"
 	}
 }

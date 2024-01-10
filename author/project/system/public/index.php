@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME};
+namespace ${REPO_OWNER}\${REPO_NAME};
 
 use mirzaev\minimal\core;
 use mirzaev\minimal\router;

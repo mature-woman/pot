@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME}\controllers;
+namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 
 // Files of the project
-use {$REPO_OWNER}\{$REPO_NAME}\controllers\core;
+use ${REPO_OWNER}\${REPO_NAME}\controllers\core;
 
 /**
  * Index controller
  *
- * @package {$REPO_OWNER}\{$REPO_NAME}\controllers
- * @author {$REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\controllers
+ * @author ${REPO_OWNER} < mail >
  */
 final class index extends core
 {

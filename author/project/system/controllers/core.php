@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME}\controllers;
+namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 
 // Files of the project
-use {$REPO_OWNER}\{$REPO_NAME}\views\manager,
-	{$REPO_OWNER}\{$REPO_NAME}\models\core as models,
-	{$REPO_OWNER}\{$REPO_NAME}\models\account_model as account,
-	{$REPO_OWNER}\{$REPO_NAME}\models\session_model as session;
+use ${REPO_OWNER}\${REPO_NAME}\views\manager,
+	${REPO_OWNER}\${REPO_NAME}\models\core as models,
+	${REPO_OWNER}\${REPO_NAME}\models\account_model as account,
+	${REPO_OWNER}\${REPO_NAME}\models\session_model as session;
 
 // Library for ArangoDB
 use ArangoDBClient\Document as _document;
@@ -19,8 +19,8 @@ use mirzaev\minimal\controller;
 /**
  * Core of controllers
  *
- * @package {$REPO_OWNER}\{$REPO_NAME}\controllers
- * @author {$REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\controllers
+ * @author ${REPO_OWNER} < mail >
  */
 class core extends controller
 {

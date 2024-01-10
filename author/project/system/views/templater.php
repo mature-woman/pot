@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME}\views;
+namespace ${REPO_OWNER}\${REPO_NAME}\views;
 
 // Files of the project
-use {$REPO_OWNER}\{$REPO_NAME}\models\session,
-	{$REPO_OWNER}\{$REPO_NAME}\models\account;
+use ${REPO_OWNER}\${REPO_NAME}\models\session,
+	${REPO_OWNER}\${REPO_NAME}\models\account;
 
 // Framework for PHP
 use mirzaev\minimal\controller;
@@ -24,8 +24,8 @@ use ArrayAccess;
 /**
  * Templater core
  *
- * @package {$REPO_OWNER}\{$REPO_NAME}\views
- * @author {$REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\views
+ * @author ${REPO_OWNER} < mail >
  */
 final class templater extends controller implements ArrayAccess
 {

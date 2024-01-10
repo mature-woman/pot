@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace {$REPO_OWNER}\{$REPO_NAME}\models\traits;
+namespace ${REPO_OWNER}\${REPO_NAME}\models\traits;
 
 // Built-in libraries
 use exception;
@@ -10,9 +10,9 @@ use exception;
 /**
  * Trait fo initialization of a status
  *
- * @package {$REPO_OWNER}\{$REPO_NAME}\models\traits
+ * @package ${REPO_OWNER}\${REPO_NAME}\models\traits
  *
- * @author {$REPO_OWNER} < mail >
+ * @author ${REPO_OWNER} < mail >
  */
 trait status
 {
