@@ -1,10 +1,10 @@
 {
 	"name": "${REPO_OWNER}/${REPO_NAME}",
 	"description": "${REPO_DESCRIPTION}",
-	"readme": "README.md",
-	"keywords": [],
-	"type": "site",
 	"homepage": "https://git.mirzaev.sexy${REPO_LINK}",
+	"type": "site",
+	"keywords": [],
+	"readme": "README.md",
 	"license": "WTFPL",
 	"authors": [
 		{
