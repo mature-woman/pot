@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace ${REPO_OWNER}\${REPO_NAME}\models;
 
 // Files of the project
-use mirzaev\ebala\models\account,
-	mirzaev\ebala\models\traits\status;
+use ${REPO_OWNER}\${REPO_NAME}\models\traits\status,
+	${REPO_OWNER}\${REPO_NAME}\models\traits\buffer,
+	${REPO_OWNER}\${REPO_NAME}\models\traits\document as document_trait,
+	${REPO_OWNER}\${REPO_NAME}\models\interfaces\document as document_interface,
+	${REPO_OWNER}\${REPO_NAME}\models\interfaces\collection as collection_interface,
+	${REPO_OWNER}\${REPO_NAME}\models\enumerations\session as verification,
+	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
 
 // Framework for ArangoDB
 use mirzaev\arangodb\collection,
@@ -19,81 +24,113 @@ use ArangoDBClient\Document as _document;
 use exception;
 
 /**
- * Model of session
+ * Session model
  *
- * @package ${REPO_OWNER}\${REPO_NAME}\controllers
- * @author ${REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\models
+ *
+ * @param string COLLECTION Name of the collection in ArangoDB
+ * @param verification VERIFICATION Type of session verification
+ *
+ * @method void __construct(?string $hash, ?int $expires, array &$errors) Constructor
+ * @method document|null hash(string $hash, array &$errors) Search by hash
+ * @method document|null address(string $address, array &$errors) Search by IP-address
+ *
+ * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author ${REPO_OWNER} <mail@domain.zone>
  */
-final class session extends core
+final class session extends core implements document_interface, collection_interface
 {
-	/**
-	 * Name of the collection in ArangoDB
-	 */
-	final public const COLLECTION = 'session';
+	use status, document_trait, buffer, cart {
+		buffer::write as write;
+		cart::initialize as cart;
+	}
 
 	/**
-	 * An instance of the ArangoDB document from ArangoDB
+	 * Collection name
+	 * 
+	 * @var string COLLECTION Name of the collection in ArangoDB
 	 */
-	protected readonly _document $document;
+	final public const string COLLECTION = 'session';
 
 	/**
-	 * Constructor of an instance
+	 * Session verification type
+	 * 
+	 * @var verification VERIFICATION Type of session verification
+	 */
+	final public const verification VERIFICATION = verification::hash_else_address;
+
+	/**
+	 * Constructor
 	 *
-	 * Initialize of a session and write them to the $this->document property
+	 * Initialize session and write into the $this->document property
 	 *
 	 * @param ?string $hash Hash of the session in ArangoDB
 	 * @param ?int $expires Date of expiring of the session (used for creating a new session)
 	 * @param array &$errors Registry of errors
 	 *
-	 * @return static instance of the ArangoDB document of session
+	 * @return void
 	 */
 	public function __construct(?string $hash = null, ?int $expires = null, array &$errors = [])
 	{
 		try {
-			if (collection::init(static::$arangodb->session, self::COLLECTION)) {
+			if (collection::initialize(static::COLLECTION, static::TYPE, errors: $errors)) {
 				// Initialized the collection
 
-				if ($this->search($hash, $errors)) {
-					// Found an instance of the ArangoDB document of session and received a session hash
+				if (isset($hash) && $document = $this->hash($hash, errors: $errors)) {
+					// Found the instance of the ArangoDB document of session and received a session hash
+ 
+					// Writing document instance of the session from ArangoDB to the property of the implementing object 
+					$this->__document($document);
+				} else if (static::VERIFICATION === verification::hash_else_address && $document = $this->address($_SERVER['REMOTE_ADDR'], errors: $errors)) {
+					// Found the instance of the ArangoDB document of session and received a session hash
+
+					// Writing document instance of the session from ArangoDB to the property of the implementing object 
+					$this->__document($document);
 				} else {
-					// Not found an instance of the ArangoDB document of session
+					// Not found the instance of the ArangoDB document of session
 
 					// Initializing a new session and write they into ArangoDB
-					$_id = document::write($this::$arangodb->session, self::COLLECTION, [
-						'active' => true,
-						'expires' => $expires ?? time() + 604800,
-						'ip' => $_SERVER['REMOTE_ADDR'],
-						'x-forwarded-for' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null,
-						'referer' => $_SERVER['HTTP_REFERER'] ?? null,
-						'useragent' => $_SERVER['HTTP_USER_AGENT'] ?? null
-					]);
+					$_id = document::write(
+						static::COLLECTION,
+						[
+							'active' => true,
+							'expires' => $expires ?? time() + 604800,
+							'address' => $_SERVER['REMOTE_ADDR'],
+							'x-forwarded-for' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null,
+							'referer' => $_SERVER['HTTP_REFERER'] ?? null,
+							'useragent' => $_SERVER['HTTP_USER_AGENT'] ?? null
+						]
+					);
 
-					if ($session = collection::search($this::$arangodb->session, sprintf(
-						<<<AQL
-							FOR d IN %s
-								FILTER d._id == '%s' && d.expires > %d && d.active == true
+					if ($session = collection::execute(
+						<<<'AQL'
+							FOR d IN @@collection
+								FILTER d._id == @_id && d.expires > @time && d.active == true
 								RETURN d
 						AQL,
-						self::COLLECTION,
-						$_id,
-						time()
-					))) {
-						// Found an instance of just created new session
+						[
+							'@collection' => static::COLLECTION,
+							'_id' => $_id,
+							'time' =>	time()
+						],
+						errors: $errors
+					)) {
+						// Found the instance of just created new session
 
-						// Generate a hash and write into an instance of the ArangoDB document of session property
+						// Generating a hash and write into the instance of the ArangoDB document of session property
 						$session->hash = sodium_bin2hex(sodium_crypto_generichash($_id));
 
-						if (document::update($this::$arangodb->session, $session)) {
-							// Is writed update
+						if (document::update($session, errors: $errors)) {
+							// Writed to ArangoDB
 
-							// Write instance of the ArangoDB document of session into property and exit (success)
-							$this->document = $session;
-						} else throw new exception('Could not write the session data');
-					} else throw new exception('Could not create or find just created session');
+							// Writing instance of the session document from ArangoDB to the property of the implementing object 
+							$this->__document($session);
+						} else throw new exception('Failed to write the session data');
+					} else throw new exception('Failed to create or find just created session');
 				}
-			} else throw new exception('Could not initialize the collection');
+			} else throw new exception('Failed to initialize ' . static::TYPE . ' collection: ' . static::COLLECTION);
 		} catch (exception $e) {
-			// Write to the registry of errors
+			// Writing to the registry of errors
 			$errors[] = [
 				'text' => $e->getMessage(),
 				'file' => $e->getFile(),
@@ -104,45 +141,38 @@ final class session extends core
 	}
 
 	/**
-	 * Search
+	 * Search by hash
 	 *
-	 * Search for the session in ArangoDB by hash and write they into $this->document property if they are found
+	 * Search for the session in ArangoDB by hash
 	 *
-	 * @param ?string $hash Hash of the session in ArangoDB
+	 * @param string $hash Hash of the session in ArangoDB
 	 * @param array &$errors Registry of errors
 	 *
-	 * @return static instance of the ArangoDB document of session
+	 * @return _document|null instance of document of the session in ArangoDB
 	 */
-	public function search(?string $hash, array &$errors = []): bool
+	public static function hash(string $hash, array &$errors = []): ?_document
 	{
 		try {
-			if (isset($hash)) {
-				// Recieved a hash
+			if (collection::initialize(static::COLLECTION, static::TYPE, errors: $errors)) {
+				// Collection initialized
 
 				// Search the session data in ArangoDB
-				$_document = $session = collection::search($this::$arangodb->session, sprintf(
-					<<<AQL
-					FOR d IN %s
-						FILTER d.hash == '%s' && d.expires > %d && d.active == true
+				return collection::execute(
+					<<<'AQL'
+					FOR d IN @@collection
+						FILTER d.hash == @hash && d.expires > @time && d.active == true
 						RETURN d
-				AQL,
-					self::COLLECTION,
-					$hash,
-					time()
-				));
-
-				if ($_document instanceof _document) {
-					// An instance of the ArangoDB document of session is found
-
-					// Write the session data to the property
-					$this->document = $_document;
-
-					// Exit (success)
-					return true;
-				}
-			}
+					AQL,
+					[
+						'@collection' => static::COLLECTION,
+						'hash' => $hash,
+						'time' => time()
+					],
+					errors: $errors
+				);
+			} else throw new exception('Failed to initialize ' . static::TYPE . ' collection: ' . static::COLLECTION);
 		} catch (exception $e) {
-			// Write to the registry of errors
+			// Writing to the registry of errors
 			$errors[] = [
 				'text' => $e->getMessage(),
 				'file' => $e->getFile(),
@@ -152,37 +182,44 @@ final class session extends core
 		}
 
 		// Exit (fail)
-		return false;
+		return null;
 	}
 
 	/**
-	 * 	Write to buffer of the session
+	 * Search by IP-address
 	 *
-	 * @param array $data Data for merging
+	 * Search for the session in ArangoDB by IP-address
+	 *
+	 * @param string $address IP-address writed to the session in ArangoDB
 	 * @param array &$errors Registry of errors
 	 *
-	 * @return bool Is data has written into the session buffer?
+	 * @return _document|null instance of document of the session in ArangoDB
 	 */
-	public function write(array $data, array &$errors = []): bool
+	public static function address(string $address, array &$errors = []): ?_document
 	{
 		try {
-			if (collection::init($this::$arangodb->session, self::COLLECTION)) {
-				// Initialized the collection
+			if (collection::initialize(static::COLLECTION, static::TYPE, errors: $errors)) {
+				// Collection initialized
 
-				// An instance of the ArangoDB document of session is initialized?
-				if (!isset($this->document)) throw new exception('An instance of the ArangoDB document of session is not initialized');
-
-				// Write data into buffwer of an instance of the ArangoDB document of session
-				$this->document->buffer = array_replace_recursive(
-					$this->document->buffer ?? [],
-					[$_SERVER['INTERFACE'] => array_replace_recursive($this->document->buffer[$_SERVER['INTERFACE']] ?? [], $data)]
+				// Search the session data in ArangoDB
+				return collection::execute(
+					<<<'AQL'
+					FOR d IN @@collection
+						FILTER d.address == @address && d.expires > @time && d.active == true
+						SORT d.updated DESC
+						LIMIT 1
+						RETURN d
+					AQL,
+					[
+						'@collection' => static::COLLECTION,
+						'address' => $address,
+						'time' =>	time()
+					],
+					errors: $errors
 				);
-
-				// Write to ArangoDB and exit (success)
-				return document::update($this::$arangodb->session, $this->document) ? true : throw new exception('Не удалось записать данные в буфер сессии');
-			} else throw new exception('Could not initialize the collection');
+			} else throw new exception('Failed to initialize ' . static::TYPE . ' collection: ' . static::COLLECTION);
 		} catch (exception $e) {
-			// Write to the registry of errors
+			// Writing to the registry of errors
 			$errors[] = [
 				'text' => $e->getMessage(),
 				'file' => $e->getFile(),
@@ -191,86 +228,6 @@ final class session extends core
 			];
 		}
 
-		return false;
-	}
-
-	/**
-	 * Write
-	 *
-	 * Write a property into an instance of the ArangoDB document
-	 *
-	 * @param string $name Name of the property
-	 * @param mixed $value Content of the property
-	 *
-	 * @return void
-	 */
-	public function __set(string $name, mixed $value = null): void
-	{
-		// Write to the property into an instance of the ArangoDB document and exit (success)
-		$this->document->{$name} = $value;
-	}
-
-	/**
-	 * Read
-	 *
-	 * Read a property from an instance of the ArangoDB docuemnt
-	 * 
-	 * @param string $name Name of the property
-	 *
-	 * @return mixed Content of the property
-	 */
-	public function __get(string $name): mixed
-	{
-		// Read a property from an instance of the ArangoDB document and exit (success)
-		return match ($name) {
-			'arangodb' => $this::$arangodb,
-			default => $this->document->{$name}
-		};
-	}
-
-	/**
-	 * Delete
-	 *
-	 * Deinitialize the property in an instance of the ArangoDB document
-	 *
-	 * @param string $name Name of the property
-	 *
-	 * @return void
-	 */
-	public function __unset(string $name): void
-	{
-		// Delete the property in an instance of the ArangoDB document and exit (success)
-		unset($this->document->{$name});
-	}
-
-	/**
-	 * Check of initialization
-	 *
-	 * Check of initialization of the property into an instance of the ArangoDB document
-	 *
-	 * @param string $name Name of the property
-	 *
-	 * @return bool The property is initialized?
-	 */
-	public function __isset(string $name): bool
-	{
-		// Check of initializatio nof the property and exit (success)
-		return isset($this->document->{$name});
-	}
-
-	/**
-	 * Execute a method
-	 *
-	 * Execute a method from an instance of the ArangoDB document
-	 *
-	 * @param string $name Name of the method
-	 * @param array $arguments Arguments for the method
-	 *
-	 * @return mixed Result of execution of the method
-	 */
-	public function __call(string $name, array $arguments = []): mixed
-	{
-		// Execute the method and exit (success)
-		if (method_exists($this->document, $name)) return $this->document->{$name}($arguments);
-	}
-}
+		// Exit (fail)
+		return null;
+	}}

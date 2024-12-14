@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace ${REPO_OWNER}\${REPO_NAME}\models;
 
 // Framework for PHP
-use mirzaev\minimal\model;
+use mirzaev\minimal\model,
+	mirzaev\minimal\http\enumerations\status;
 
 // Framework for ArangoDB
 use mirzaev\arangodb\connection as arangodb,
 	mirzaev\arangodb\collection,
 	mirzaev\arangodb\document;
 
-// Libraries for ArangoDB
+// Library for ArangoDB
 use ArangoDBClient\Document as _document,
 	ArangoDBClient\DocumentHandler as _document_handler;
 
@@ -20,38 +21,40 @@ use ArangoDBClient\Document as _document,
 use exception;
 
 /**
- * Core of models
+ * Models core
  *
- * @package ${REPO_OWNER}\${REPO_NAME}\controllers
- * @author ${REPO_OWNER} < mail >
+ * @package ${REPO_OWNER}\${REPO_NAME}\models
+ *
+ * @param public ARANGODB Path to the file with ArangoDB session connection data
+ * @param arangodb $arangodb Instance of the ArangoDB session
+ *
+ * @method void __construct(bool $initialize, ?arangodb $arangodb) Constructor
+ * @method _document|static|array|null read(string $filter, string $sort, int $amount, int $page, string $return, array $parameters, array &$errors) Read document from ArangoDB
+ *
+ * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author ${REPO_OWNER} <mail@domain.zone>
  */
 class core extends model
 {
 	/**
-	 * Postfix for name of models files
+	 * ArangoDB connection daa
+	 *
+	 * @var string ARANGODB Path to the file with ArangoDB session connection data	 
 	 */
-	final public const POSTFIX = '';
+	final public const string ARANGODB = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . 'arangodb.php';
 
 	/**
-	 * Path to the file with settings of connecting to the ArangoDB
-	 */
-	final public const ARANGODB = '../settings/arangodb.php';
-
-	/**
-	 * Instance of the session of ArangoDB
+	 * ArangoDB
+	 *
+	 * @var arangodb $arangodb Instance of the ArangoDB session
 	 */
 	protected static arangodb $arangodb;
 
 	/**
-	 * Name of the collection in ArangoDB
-	 */
-	public const COLLECTION = 'THIS_COLLECTION_SHOULD_NOT_EXIST_REPLACE_IT_IN_THE_MODEL';
-
-	/**
-	 * Constructor of an instance
+	 * Constructor
 	 *
 	 * @param bool $initialize Initialize a model?
-	 * @param ?arangodb $arangodb Instance of a session of ArangoDB
+	 * @param ?arangodb $arangodb Instance of the ArangoDB session
 	 *
 	 * @return void
 	 */
@@ -63,66 +66,81 @@ class core extends model
 		if ($initialize) {
 			// Initializing is requested
 
-			if (isset($arangodb)) {
-				// Recieved an instance of a session of ArangoDB
-
-				// Write an instance of a session of ArangoDB to the property
-				$this->__set('arangodb', $arangodb);
-			} else {
-				// Not recieved an instance of a session of ArangoDB
-
-				// Initializing of an instance of a session of ArangoDB
-				$this->__get('arangodb');
-			}
+			// Writing an instance of a session of ArangoDB to the property
+			self::$arangodb = $arangodb ?? new arangodb(require static::ARANGODB);
 		}
 	}
 
 	/**
-	 * Read from ArangoDB
+	 * Read document from ArangoDB
 	 *
 	 * @param string $filter Expression for filtering (AQL)
 	 * @param string $sort Expression for sorting (AQL)
 	 * @param int $amount Amount of documents for collect
 	 * @param int $page Page
 	 * @param string $return Expression describing the parameters to return (AQL)
-	 * @param array &$errors The registry on errors
+	 * @param array $parameters Binded parameters for placeholders ['placeholder' => parameter]
+	 * @param array &$errors Registry of errors
 	 *
-	 * @return _document|array|null An array of instances of documents from ArangoDB, if they are found
+	 * @return mixed An array of instances of documents from ArangoDB, if they are found
 	 */
-	public static function read(
+	public static function _read(
 		string $filter = '',
 		string $sort = 'd.created DESC, d._key DESC',
 		int $amount = 1,
 		int $page = 1,
 		string $return = 'd',
+		array $parameters = [],
 		array &$errors = []
-	): _document|array|null {
+	): _document|static|array|null {
 		try {
-			if (collection::init(static::$arangodb->session, static::COLLECTION)) {
+			if (collection::initialize(static::COLLECTION, static::TYPE)) {
 				// Initialized the collection
 
-				// Read from ArangoDB and exit (success)
-				return collection::search(
-					static::$arangodb->session,
+				// Read from ArangoDB
+				$result = collection::execute(
 					sprintf(
 						<<<'AQL'
-							FOR d IN %s
+							FOR d IN @@collection
 								%s
 								%s
-								LIMIT %d, %d
+								LIMIT @offset, @amount
 								RETURN %s
 						AQL,
-						static::COLLECTION,
 						empty($filter) ? '' : "FILTER $filter",
 						empty($sort) ? '' : "SORT $sort",
-						--$page <= 0 ? 0 : $amount * $page,
-						$amount,
-						$return
-					)
+						empty($return) ? 'd' : $return
+					),
+					[
+						'@collection' => static::COLLECTION,
+						'offset' => --$page <= 0 ? 0 : $page * $amount,
+						'amount' => $amount
+					] + $parameters,
+					errors: $errors
 				);
-			} else throw new exception('Failed to initialize the collection');
+
+				if ($amount === 1 && $result instanceof _document) {
+					// Received only 1 document and @todo rebuild 
+
+					// Initializing the object
+					$object = new static;
+
+					if (method_exists($object, '__document')) {
+						// Object can implement a document from ArangoDB
+
+						// Writing the instance of document from ArangoDB to the implement object
+						$object->__document($result);
+
+						// Exit (success)
+						return $object;
+					}
+				}
+
+				// Exit (success)
+				return $result;
+			} else throw new exception('Failed to initialize ' . static::TYPE . ' collection: ' . static::COLLECTION);
 		} catch (exception $e) {
-			// Write to the registry of errors
+			// Writing to registry of errors
 			$errors[] = [
 				'text' => $e->getMessage(),
 				'file' => $e->getFile(),
@@ -133,50 +151,6 @@ class core extends model
 
 		// Exit (fail)
 		return null;
-	}
-
-	/**
-	 * Delete from ArangoDB
-	 *
-	 * @param _document $instance Instance of the document from ArangoDB
-	 * @param array &$errors The registry on errors
-	 *
-	 * @return bool Deleted from ArangoDB without errors?
-	 */
-	public static function delete(_document $instance, array &$errors = []): bool
-	{
-		try {
-			if (collection::init(static::$arangodb->session, static::COLLECTION)) {
-				// Initialized the collection
-
-				// Delete from ArangoDB and exit (success)
-				return (new _document_handler(static::$arangodb->session))->remove($instance);
-			} else throw new exception('Failed to initialize the collection');
-		} catch (exception $e) {
-			// Write to the registry of errors
-			$errors[] = [
-				'text' => $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine(),
-				'stack' => $e->getTrace()
-			];
-		}
-
-		// Exit (fail)
-		return false;
-	}
-
-	/**
-	 * Update in ArangoDB
-	 *
-	 * @param _document $instance Instance of the document from ArangoDB
-	 *
-	 * @return bool Writed to ArangoDB without errors?
-	 */
-	public static function update(_document $instance): bool
-	{
-    // Update in ArangoDB and exit (success)
-		return document::update(static::$arangodb->session, $instance);
 	}
 
 	/**
@@ -191,26 +165,9 @@ class core extends model
 	{
 		match ($name) {
 			'arangodb' => (function () use ($value) {
-				if ($this->__isset('arangodb')) {
-					// Is alredy initialized
-
-					// Exit (fail)
-					throw new exception('Forbidden to reinitialize the session of ArangoDB ($this::$arangodb)', 500);
-				} else {
-					// Is not already initialized
-
-					if ($value instanceof arangodb) {
-						// Recieved an appropriate value
-
-						// Write the property and exit (success)
-						self::$arangodb = $value;
-					} else {
-						// Recieved an inappropriate value
-
-						// Exit (fail)
-						throw new exception('Session of ArangoDB ($this::$arangodb) is need to be mirzaev\arangodb\connection', 500);
-					}
-				}
+				if (isset(static::$arangodb)) throw new exception('Forbidden to reinitialize the ArangoDB session($this::$arangodb)', status::internal_server_error->value);
+				else if ($value instanceof arangodb) self::$arangodb = $value;
+				else throw new exception('Session of connection to ArangoDB ($this::$arangodb) is need to be mirzaev\arangodb\connection', status::internal_server_error->value);
 			})(),
 			default => parent::__set($name, $value)
 		};
@@ -226,22 +183,6 @@ class core extends model
 	public function __get(string $name): mixed
 	{
 		return match ($name) {
-			'arangodb' => (function () {
-				try {
-					if (!$this->__isset('arangodb')) {
-						// Is not initialized
-
-						// Initializing of a default value from settings
-						$this->__set('arangodb', new arangodb(require static::ARANGODB));
-					}
-
-					// Exit (success)
-					return self::$arangodb;
-				} catch (exception) {
-					// Exit (fail)
-					return null;
-				}
-			})(),
 			default => parent::__get($name)
 		};
 	}
@@ -280,7 +221,7 @@ class core extends model
 	 */
 	public static function __callStatic(string $name, array $arguments): mixed
 	{
-		match ($name) {
+		return match ($name) {
 			'arangodb' => (new static)->__get('arangodb'),
 			default => throw new exception("Not found: $name", 500)
 		};

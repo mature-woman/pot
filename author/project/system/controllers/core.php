@@ -7,40 +7,61 @@ namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 // Files of the project
 use ${REPO_OWNER}\${REPO_NAME}\views\manager,
 	${REPO_OWNER}\${REPO_NAME}\models\core as models,
-	${REPO_OWNER}\${REPO_NAME}\models\account_model as account,
-	${REPO_OWNER}\${REPO_NAME}\models\session_model as session;
-
-// Library for ArangoDB
-use ArangoDBClient\Document as _document;
+	${REPO_OWNER}\${REPO_NAME}\models\session;
 
 // Framework for PHP
-use mirzaev\minimal\controller;
+use mirzaev\minimal\core as minimal,
+	mirzaev\minimal\controller,
+	mirzaev\minimal\http\response,
+	mirzaev\minimal\http\enumerations\status;
 
 /**
- * Core of controllers
+ * Controllers core
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\controllers
- * @author ${REPO_OWNER} < mail >
+ *
+ * @param session $session Instance of the session
+ * @param language $language Language
+ * @param response $response Response
+ * @param array $errors Registry of errors
+ *
+ * @method void __construct(minimal $minimal, bool $initialize) Constructor
+ *
+ * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author ${REPO_OWNER} <mail@domain.zone>
  */
 class core extends controller
 {
 	/**
-	 * Postfix for name of controllers files
-	 */
-	final public const POSTFIX = '';
-
-	/**
-	 * Instance of a session
+	 * Session
+	 * 
+	 * @var session|null $session Instance of the session
 	 */
 	protected readonly session $session;
 
 	/**
-	 * Instance of an account
+	 * Language
+	 *
+	 * @var language $language Language
 	 */
-	protected readonly ?account $account;
+	protected language $language = language::en;
 
 	/**
-	 * Registry of errors
+	 * Response
+	 *
+	 * @see https://wiki.php.net/rfc/property-hooks (find a table about backed and virtual hooks)
+	 *
+	 * @var response $response Response
+	 */
+	protected response $response {
+		// Read
+		get => $this->response ??= $this->request->response();
+	}
+
+	/**
+	 * Errors
+	 *
+	 * @var array $errors Registry of errors
 	 */
 	protected array $errors = [
 		'session' => [],
@@ -48,24 +69,25 @@ class core extends controller
 	];
 
 	/**
-	 * Constructor of an instance
+	 * Constructor
 	 *
+	 * @param minimal $minimal Instance of the MINIMAL
 	 * @param bool $initialize Initialize a controller?
 	 *
 	 * @return void
 	 */
-	public function __construct(bool $initialize = true)
+	public function __construct(minimal $minimal, bool $initialize = true)
 	{
 		// Blocking requests from CloudFlare (better to write this blocking into nginx config file)
-		if ($_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return;
+		if (isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
 		// For the extends system
-		parent::__construct($initialize);
+		parent::__construct(core: $minimal);
 
 		if ($initialize) {
-			// Initializing is requested
+			// Requestet initializing
 
-			// Initializing of models core (connect to ArangoDB...)
+			// Initializing core of the models
 			new models();
 
 			// Initializing of the date until which the session will be active
@@ -100,22 +122,4 @@ class core extends controller
 			$this->view = new templater($this->session);
 		}
 	}
-
-	/**
-	 * Check of initialization
-	 *
-	 * Checks whether a property is initialized in a document instance from ArangoDB
-	 *
-	 * @param string $name Name of the property from ArangoDB
-	 *
-	 * @return bool The property is initialized?
-	 */
-	public function __isset(string $name): bool
-	{
-		// Check of initialization of the property and exit (success)
-		return match ($name) {
-			default => isset($this->{$name})
-		};
-	}
-
 }

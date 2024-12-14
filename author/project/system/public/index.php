@@ -4,29 +4,40 @@ declare(strict_types=1);
 
 namespace ${REPO_OWNER}\${REPO_NAME};
 
-use mirzaev\minimal\core;
-use mirzaev\minimal\router;
+// Framework for PHP
+use mirzaev\minimal\core,
+	mirzaev\minimal\route;
 
+// Enabling debugging
 /* ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1); */
 
+// Initializing path to the public directory 
+define('PUBLIC', __DIR__);
+
+// Initializing path to the project root directory
+define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+
+// Initializing path to the directory of views 
 define('VIEWS', realpath('..' . DIRECTORY_SEPARATOR . 'views'));
+
+// Initializing path to the directory of the storage 
 define('STORAGE', realpath('..' . DIRECTORY_SEPARATOR . 'storage'));
-define('INDEX', __DIR__);
 
-// Автозагрузка
-require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+// Initializing default theme for the views templater
+define('THEME', 'default');
 
-// Инициализация маршрутизатора
-$router = new router;
+// Initializing dependencies
+require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-// Запись маршрутов
-$router->write('/', 'index', 'index');
+// Initializing core
+$core = new core(namespace: __NAMESPACE__);
 
-// Инициализация ядра
-$core = new core(namespace: __NAMESPACE__, router: $router);
+// Initializing routes
+$router->router
+	->write('/', new route('index', 'index'), 'GET')
+;
 
-// Обработка запроса
-echo $core->start();
-
+// Handling request
+$core->start();

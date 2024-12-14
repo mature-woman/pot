@@ -6,7 +6,7 @@ namespace ${REPO_OWNER}\${REPO_NAME}\views;
 
 // Files of the project
 use ${REPO_OWNER}\${REPO_NAME}\models\session,
-	${REPO_OWNER}\${REPO_NAME}\models\account;
+	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
 
 // Framework for PHP
 use mirzaev\minimal\controller;
@@ -15,61 +15,72 @@ use mirzaev\minimal\controller;
 use Twig\Loader\FilesystemLoader,
 	Twig\Environment as twig,
 	Twig\Extra\Intl\IntlExtension as intl,
-	Twig\TwigFilter;
-
+	Twig\TwigFilter,
+	Twig\TwigFunction;
 
 // Built-in libraries
-use ArrayAccess;
+use ArrayAccess as array_access,
+	Error as error;
 
 /**
- * Templater core
+ * Templater
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\views
- * @author ${REPO_OWNER} < mail >
+ *
+ * @param twig $twig Instance of the twig templater
+ * @param array $variables Registry of view global variables
+ *
+ * @method void __construct(?session &$session) Constructor
+ * @method string|null render(string $file, ?array $variables) Render the HTML-document
+ *
+ * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author ${REPO_OWNER} <mail@domain.zone>
  */
-final class templater extends controller implements ArrayAccess
+final class templater extends controller implements array_access
 {
 	/**
-	 * Registry of global variables of view
-	 */
-	public array $variables = [];
-
-	/**
-	 * Instance of twig templater 
+	 * Twig
+	 * 
+	 * @var twig $twig Instance of the twig templater
 	 */
 	readonly public twig $twig;
 
 	/**
+	 * Variables
+	 * 
+	 * @var array $variables Registry of view global variables
+	 */
+	public array $variables = [];
+
+	/**
 	 * Constructor of an instance
 	 *
-	 * @param ?session $session Instance of the session of ArangoDB
+	 * @param ?session $session Instance of the session in ArangoDB
 	 *
 	 * @return void
 	 */
-	public function __construct(?session &$session = null): void
+	public function __construct(?session &$session = null)
 	{
-		// Initializing of an instance of twig
+		// Initializing the Twig instance
 		$this->twig = new twig(new FilesystemLoader(VIEWS));
 
-		// Initializing of global variables
+		// Initializing global variables
 		$this->twig->addGlobal('theme', 'default');
 		$this->twig->addGlobal('server', $_SERVER);
 		$this->twig->addGlobal('cookies', $_COOKIE);
-		if (!empty($session->status())) {
-			$this->twig->addGlobal('session', $session);
-		}
-
-		// Initializing of twig extensions
-		$this->twig->addExtension(new intl());
+		if (!empty($session->status())) $this->twig->addGlobal('session', $session);
+		$this->twig->addGlobal('language', $language = $session?->buffer['language'] ?? language::en);
 	}
 
 	/**
-	 * Render a HTML-document
+	 * Render 
+	 *
+	 * Render the HTML-document
 	 *
 	 * @param string $file Related path to a HTML-document
 	 * @param ?array $variables Registry of variables to push into registry of global variables
 	 *
-	 * @return ?string HTML-документ
+	 * @return ?string HTML-document
 	 */
 	public function render(string $file, ?array $variables = null): ?string
 	{
@@ -80,7 +91,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Write
 	 *
-	 * Write a variable into registry of global variables
+	 * Write the variable into the registry of the view global variables
 	 *
 	 * @param string $name Name of the variable
 	 * @param mixed $value Value of the variable
@@ -96,7 +107,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Read
 	 *
-	 * Read a variable from registry of global variables
+	 * Read the variable from the registry of the view global variables
 	 *
 	 * @param string $name Name of the variable
 	 *
@@ -111,7 +122,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Delete
 	 *
-	 * Delete a variable from the registry of global variables
+	 * Delete the variable from the registry of the view global variables
 	 *
 	 * @param string $name Name of the variable 
 	 *
@@ -126,7 +137,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Check of initialization
 	 *
-	 * Check of initialization in registry of global variables
+	 * Check of initialization in the registry of the view global variables
 	 *
 	 * @param string $name Name of the variable
 	 *
@@ -141,7 +152,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Write
 	 *
-	 * Write a variable into registry of global variables
+	 * Write the variable into the registry of the view global variables
 	 *
 	 * @param mixed $name Name of an offset of the variable
 	 * @param mixed $value Value of the variable
@@ -157,7 +168,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Read
 	 *
-	 * Read a variable from registry of global variables
+	 * Read the variable from the registry of the view global variables
 	 *
 	 * @param mixed $name Name of the variable
 	 *
@@ -172,7 +183,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Delete
 	 *
-	 * Delete a variable from the registry of global variables
+	 * Delete the variable from the registry of the view global variables
 	 *
 	 * @param mixed $name Name of the variable 
 	 *
@@ -187,7 +198,7 @@ final class templater extends controller implements ArrayAccess
 	/**
 	 * Check of initialization
 	 *
-	 * Check of initialization in registry of global variables
+	 * Check of initialization in the registry of the view global variables
 	 *
 	 * @param mixed $name Name of the variable
 	 *
