@@ -19,7 +19,7 @@ use exception;
  * @uses document_trait
  * @uses document_interface
  *
- * @method bool|null status(array &$errors) Check document by its status
+ * @method bool|null status(array &$$errors) Check document by its status
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\models\traits
  *
@@ -33,22 +33,22 @@ trait status
 	 *
 	 * Check document by its status
 	 *
-	 * @param array &$errors Registry of errors
+	 * @param array &$$errors Registry of errors
 	 *
 	 * @return ?bool Status, if found
 	 */
-	public function status(array &$errors = []): ?bool
+	public function status(array &$$errors = []): ?bool
 	{
 		try {
 			// Read from ArangoDB and exit (success)
-			return $this->document->active ?? false;
-		} catch (exception $e) {
+			return $$this->document->active ?? false;
+		} catch (exception $$e) {
 			// Writing to the registry of errors
-			$errors[] = [
-				'text' => $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine(),
-				'stack' => $e->getTrace()
+			$$errors[] = [
+				'text' => $$e->getMessage(),
+				'file' => $$e->getFile(),
+				'line' => $$e->getLine(),
+				'stack' => $$e->getTrace()
 			];
 		}
 

@@ -12,7 +12,7 @@ use exception;
  *
  * Trait with files handlers
  *
- * @method static void delete(string $directory, array &$errors)
+ * @method static void delete(string $$directory, array &$$errors)
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\models\traits
  *
@@ -26,37 +26,37 @@ trait files
 	 *
 	 * Delete files recursively
 	 * 
-	 * @param string $directory Directory
-	 * @param array &$errors Registry of errors
+	 * @param string $$directory Directory
+	 * @param array &$$errors Registry of errors
 	 *
 	 * @return void
 	 */
-	private static function delete(string $directory, array &$errors = []): void
+	private static function delete(string $$directory, array &$$errors = []): void
 	{
 		try {
-			if (file_exists($directory)) {
+			if (file_exists($$directory)) {
 				// Directory exists
 
 				// Deleting descendant files and directories (enter to the recursion)
-				foreach (scandir($directory) as $file) {
-					if ($file === '.' || $file === '..') continue;
-					else if (is_dir("$directory/$file")) static::delete("$directory/$file", $errors);
-					else unlink("$directory/$file");
+				foreach (scandir($$directory) as $$file) {
+					if ($$file === '.' || $$file === '..') continue;
+					else if (is_dir("$$directory/$$file")) static::delete("$$directory/$$file", $$errors);
+					else unlink("$$directory/$$file");
 				}
 
 				// Deleting the directory
-				rmdir($directory);
+				rmdir($$directory);
 
 				// Exit (success)
 				return;
 			} else throw new exception('Directory does not exist');
-		} catch (exception $e) {
+		} catch (exception $$e) {
 			// Writing to the registry of errors
-			$errors[] = [
-				'text' => $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine(),
-				'stack' => $e->getTrace()
+			$$errors[] = [
+				'text' => $$e->getMessage(),
+				'file' => $$e->getFile(),
+				'line' => $$e->getLine(),
+				'stack' => $$e->getTrace()
 			];
 		}
 

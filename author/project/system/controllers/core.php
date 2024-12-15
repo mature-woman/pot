@@ -20,12 +20,12 @@ use mirzaev\minimal\core as minimal,
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\controllers
  *
- * @param session $session Instance of the session
- * @param language $language Language
- * @param response $response Response
- * @param array $errors Registry of errors
+ * @param session $$session Instance of the session
+ * @param language $$language Language
+ * @param response $$response Response
+ * @param array $$errors Registry of errors
  *
- * @method void __construct(minimal $minimal, bool $initialize) Constructor
+ * @method void __construct(minimal $$minimal, bool $$initialize) Constructor
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
  * @author ${REPO_OWNER} <mail@domain.zone>
@@ -35,35 +35,35 @@ class core extends controller
 	/**
 	 * Session
 	 * 
-	 * @var session|null $session Instance of the session
+	 * @var session|null $$session Instance of the session
 	 */
-	protected readonly session $session;
+	protected readonly session $$session;
 
 	/**
 	 * Language
 	 *
-	 * @var language $language Language
+	 * @var language $$language Language
 	 */
-	protected language $language = language::en;
+	protected language $$language = language::en;
 
 	/**
 	 * Response
 	 *
 	 * @see https://wiki.php.net/rfc/property-hooks (find a table about backed and virtual hooks)
 	 *
-	 * @var response $response Response
+	 * @var response $$response Response
 	 */
-	protected response $response {
+	protected response $$response {
 		// Read
-		get => $this->response ??= $this->request->response();
+		get => $$this->response ??= $$this->request->response();
 	}
 
 	/**
 	 * Errors
 	 *
-	 * @var array $errors Registry of errors
+	 * @var array $$errors Registry of errors
 	 */
-	protected array $errors = [
+	protected array $$errors = [
 		'session' => [],
 		'account' => []
 	];
@@ -71,45 +71,45 @@ class core extends controller
 	/**
 	 * Constructor
 	 *
-	 * @param minimal $minimal Instance of the MINIMAL
-	 * @param bool $initialize Initialize a controller?
+	 * @param minimal $$minimal Instance of the MINIMAL
+	 * @param bool $$initialize Initialize a controller?
 	 *
 	 * @return void
 	 */
-	public function __construct(minimal $minimal, bool $initialize = true)
+	public function __construct(minimal $$minimal, bool $$initialize = true)
 	{
 		// Blocking requests from CloudFlare (better to write this blocking into nginx config file)
-		if (isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
+		if (isset($$_SERVER['HTTP_USER_AGENT']) && $$_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
 		// For the extends system
-		parent::__construct(core: $minimal);
+		parent::__construct(core: $$minimal);
 
-		if ($initialize) {
+		if ($$initialize) {
 			// Requestet initializing
 
 			// Initializing core of the models
 			new models();
 
 			// Initializing of the date until which the session will be active
-			$expires = strtotime('+1 week');
+			$$expires = strtotime('+1 week');
 
 			// Initializing of default value of hash of the session
-			$_COOKIE["session"] ??= null;
+			$$_COOKIE["session"] ??= null;
 
 			// Initializing of session
-			$this->session = new session($_COOKIE["session"], $expires, $this->errors['session']);
+			$$this->session = new session($$_COOKIE["session"], $$expires, $$this->errors['session']);
 
 			// Handle a problems with initializing a session
-			if (!empty($this->errors['session'])) die;
-			else if ($_COOKIE["session"] !== $this->session->hash) {
+			if (!empty($$this->errors['session'])) die;
+			else if ($$_COOKIE["session"] !== $$this->session->hash) {
 				// Hash of the session is changed (implies that the session has expired and recreated)
 
 				// Write a new hash of the session to cookies
 				setcookie(
 					'session',
-					$this->session->hash,
+					$$this->session->hash,
 					[
-						'expires' => $expires,
+						'expires' => $$expires,
 						'path' => '/',
 						'secure' => true,
 						'httponly' => true,
@@ -119,7 +119,7 @@ class core extends controller
 			}
 
 			// Initializing of preprocessor of views
-			$this->view = new templater($this->session);
+			$$this->view = new templater($$this->session);
 		}
 	}
 }

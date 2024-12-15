@@ -25,7 +25,7 @@ enum language
    *
 	 * Initialize label of the language
 	 *
-	 * @param language|null $language Language into which to translate
+	 * @param language|null $$language Language into which to translate
 	 *
 	 * @return string Translated label of the language
    *
@@ -33,15 +33,15 @@ enum language
 	 * 1. More languages
 	 * 2. Cases???
 	 */
-	public function label(?language $language = language::en): string
+	public function label(?language $$language = language::en): string
 	{
 		// Exit (success)
-		return match ($this) {
-			language::en =>	match ($language) {
+		return match ($$this) {
+			language::en =>	match ($$language) {
 				language::en => 'English',
 				language::ru => 'Английский'
 			},
-			language::ru => match ($language) {
+			language::ru => match ($$language) {
 				language::en => 'Russian',
 				language::ru => 'Русский'
 			}

@@ -15,7 +15,7 @@ use mirzaev\minimal\http\enumerations\status;
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\controllers
  *
- * @param array $errors Registry of errors
+ * @param array $$errors Registry of errors
  *
  * @method null index() Main page
  *
@@ -27,9 +27,9 @@ final class index extends core
 	/**
 	 * Errors
 	 *
-	 * @var array $errors Registry of errors
+	 * @var array $$errors Registry of errors
 	 */
-	protected array $errors = [
+	protected array $$errors = [
 		'session' => []
 	];
 
@@ -40,24 +40,24 @@ final class index extends core
 	 */
 	public function index(): null
 	{
-		if (str_contains($this->request->headers['accept'], content::any->value)) {
+		if (str_contains($$this->request->headers['accept'], content::any->value)) {
 			// Request for any response
 
 			// Render page
-			$page = $this->view->render('index.html');
+			$$page = $$this->view->render('index.html');
 
 			// Sending response
-			$this->response
+			$$this->response
 				->start()
 				->clean()
 				->sse()
-				->write($page)
-				->validate($this->request)
+				->write($$page)
+				->validate($$this->request)
 				?->body()
 				->end();
 
 			// Deinitializing rendered page
-			unset($page);
+			unset($$page);
 
 			// Exit (success)
 			return null;

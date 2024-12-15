@@ -22,6 +22,12 @@ define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' 
 // Initializing path to the directory of views 
 define('VIEWS', realpath('..' . DIRECTORY_SEPARATOR . 'views'));
 
+// Initializing path to the directory of storage 
+define('STORAGE', realpath('..' . DIRECTORY_SEPARATOR . 'storage'));
+
+// Initializing path to the directory of settings 
+define('SETTINGS', realpath('..' . DIRECTORY_SEPARATOR . 'settings'));
+
 // Initializing path to the directory of the storage 
 define('STORAGE', realpath('..' . DIRECTORY_SEPARATOR . 'storage'));
 
@@ -32,12 +38,12 @@ define('THEME', 'default');
 require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 // Initializing core
-$core = new core(namespace: __NAMESPACE__);
+$$core = new core(namespace: __NAMESPACE__);
 
 // Initializing routes
-$router->router
+$$router->router
 	->write('/', new route('index', 'index'), 'GET')
 ;
 
 // Handling request
-$core->start();
+$$core->start();

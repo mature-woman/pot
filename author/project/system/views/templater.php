@@ -27,11 +27,11 @@ use ArrayAccess as array_access,
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\views
  *
- * @param twig $twig Instance of the twig templater
- * @param array $variables Registry of view global variables
+ * @param twig $$twig Instance of the twig templater
+ * @param array $$variables Registry of view global variables
  *
- * @method void __construct(?session &$session) Constructor
- * @method string|null render(string $file, ?array $variables) Render the HTML-document
+ * @method void __construct(?session &$$session) Constructor
+ * @method string|null render(string $$file, ?array $$variables) Render the HTML-document
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
  * @author ${REPO_OWNER} <mail@domain.zone>
@@ -41,35 +41,35 @@ final class templater extends controller implements array_access
 	/**
 	 * Twig
 	 * 
-	 * @var twig $twig Instance of the twig templater
+	 * @var twig $$twig Instance of the twig templater
 	 */
-	readonly public twig $twig;
+	readonly public twig $$twig;
 
 	/**
 	 * Variables
 	 * 
-	 * @var array $variables Registry of view global variables
+	 * @var array $$variables Registry of view global variables
 	 */
-	public array $variables = [];
+	public array $$variables = [];
 
 	/**
 	 * Constructor of an instance
 	 *
-	 * @param ?session $session Instance of the session in ArangoDB
+	 * @param ?session $$session Instance of the session in ArangoDB
 	 *
 	 * @return void
 	 */
-	public function __construct(?session &$session = null)
+	public function __construct(?session &$$session = null)
 	{
 		// Initializing the Twig instance
-		$this->twig = new twig(new FilesystemLoader(VIEWS));
+		$$this->twig = new twig(new FilesystemLoader(VIEWS));
 
 		// Initializing global variables
-		$this->twig->addGlobal('theme', 'default');
-		$this->twig->addGlobal('server', $_SERVER);
-		$this->twig->addGlobal('cookies', $_COOKIE);
-		if (!empty($session->status())) $this->twig->addGlobal('session', $session);
-		$this->twig->addGlobal('language', $language = $session?->buffer['language'] ?? language::en);
+		$$this->twig->addGlobal('theme', 'default');
+		$$this->twig->addGlobal('server', $$_SERVER);
+		$$this->twig->addGlobal('cookies', $$_COOKIE);
+		if (!empty($$session->status())) $$this->twig->addGlobal('session', $$session);
+		$$this->twig->addGlobal('language', $$language = $$session?->buffer['language'] ?? language::en);
 	}
 
 	/**
@@ -77,15 +77,15 @@ final class templater extends controller implements array_access
 	 *
 	 * Render the HTML-document
 	 *
-	 * @param string $file Related path to a HTML-document
-	 * @param ?array $variables Registry of variables to push into registry of global variables
+	 * @param string $$file Related path to a HTML-document
+	 * @param ?array $$variables Registry of variables to push into registry of global variables
 	 *
 	 * @return ?string HTML-document
 	 */
-	public function render(string $file, ?array $variables = null): ?string
+	public function render(string $$file, ?array $$variables = null): ?string
 	{
 		// Generation and exit (success)
-		return $this->twig->render('themes' . DIRECTORY_SEPARATOR . $this->twig->getGlobal('theme') . DIRECTORY_SEPARATOR . $file, $variables + $this->variables);
+		return $$this->twig->render('themes' . DIRECTORY_SEPARATOR . $$this->twig->getGlobal('theme') . DIRECTORY_SEPARATOR . $$file, $$variables + $$this->variables);
 	}
 
 	/**
@@ -93,15 +93,15 @@ final class templater extends controller implements array_access
 	 *
 	 * Write the variable into the registry of the view global variables
 	 *
-	 * @param string $name Name of the variable
-	 * @param mixed $value Value of the variable
+	 * @param string $$name Name of the variable
+	 * @param mixed $$value Value of the variable
 	 *
 	 * @return void
 	 */
-	public function __set(string $name, mixed $value = null): void
+	public function __set(string $$name, mixed $$value = null): void
 	{
 		// Write the variable and exit (success)
-		$this->variables[$name] = $value;
+		$$this->variables[$$name] = $$value;
 	}
 
 	/**
@@ -109,14 +109,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Read the variable from the registry of the view global variables
 	 *
-	 * @param string $name Name of the variable
+	 * @param string $$name Name of the variable
 	 *
 	 * @return mixed Content of the variable, if they are found
 	 */
-	public function __get(string $name): mixed
+	public function __get(string $$name): mixed
 	{
     // Read the variable and exit (success)
-		return $this->variables[$name];
+		return $$this->variables[$$name];
 	}
 
 	/**
@@ -124,14 +124,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Delete the variable from the registry of the view global variables
 	 *
-	 * @param string $name Name of the variable 
+	 * @param string $$name Name of the variable 
 	 *
 	 * @return void
 	 */
-	public function __unset(string $name): void
+	public function __unset(string $$name): void
 	{
 	 // Delete the variable and exit (success)
-		unset($this->variables[$name]);
+		unset($$this->variables[$$name]);
 	}
 
 	/**
@@ -139,14 +139,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Check of initialization in the registry of the view global variables
 	 *
-	 * @param string $name Name of the variable
+	 * @param string $$name Name of the variable
 	 *
 	 * @return bool The variable is initialized?
 	 */
-	public function __isset(string $name): bool
+	public function __isset(string $$name): bool
 	{
 		// Check of initialization of the variable and exit (success)
-		return isset($this->variables[$name]);
+		return isset($$this->variables[$$name]);
 	}
 
 	/**
@@ -154,15 +154,15 @@ final class templater extends controller implements array_access
 	 *
 	 * Write the variable into the registry of the view global variables
 	 *
-	 * @param mixed $name Name of an offset of the variable
-	 * @param mixed $value Value of the variable
+	 * @param mixed $$name Name of an offset of the variable
+	 * @param mixed $$value Value of the variable
 	 *
 	 * @return void
 	 */
-	public function offsetSet(mixed $name, mixed $value): void
+	public function offsetSet(mixed $$name, mixed $$value): void
 	{
 		// Write the variable and exit (success)
-		$this->variables[$name] = $value;
+		$$this->variables[$$name] = $$value;
 	}
 
 	/**
@@ -170,14 +170,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Read the variable from the registry of the view global variables
 	 *
-	 * @param mixed $name Name of the variable
+	 * @param mixed $$name Name of the variable
 	 *
 	 * @return mixed Content of the variable, if they are found
 	 */
-	public function offsetGet(mixed $name): mixed
+	public function offsetGet(mixed $$name): mixed
 	{
     // Read the variable and exit (success)
-		return $this->variables[$name];
+		return $$this->variables[$$name];
 	}
 
 	/**
@@ -185,14 +185,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Delete the variable from the registry of the view global variables
 	 *
-	 * @param mixed $name Name of the variable 
+	 * @param mixed $$name Name of the variable 
 	 *
 	 * @return void
 	 */
-	public function offsetUnset(mixed $name): void
+	public function offsetUnset(mixed $$name): void
 	{
 	 // Delete the variable and exit (success)
-		unset($this->variables[$name]);
+		unset($$this->variables[$$name]);
 	}
 
 	/**
@@ -200,14 +200,14 @@ final class templater extends controller implements array_access
 	 *
 	 * Check of initialization in the registry of the view global variables
 	 *
-	 * @param mixed $name Name of the variable
+	 * @param mixed $$name Name of the variable
 	 *
 	 * @return bool The variable is initialized?
 	 */
-	public function offsetExists(mixed $name): bool
+	public function offsetExists(mixed $$name): bool
 	{
 		// Check of initialization of the variable and exit (success)
-		return isset($this->variables[$name]);
+		return isset($$this->variables[$$name]);
 	}
 }
 
