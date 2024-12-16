@@ -3,7 +3,7 @@
 <html lang="ru">
 
 <head>
-	{% use 'head.html' with title as head_title, meta as head_meta, css as head_css %}
+	{% use '/themes/default/head.html' with title as head_title, meta as head_meta, css as head_css %}
 
 	{% block title %}
 	{{ block('head_title') }}
@@ -22,7 +22,7 @@
 	{% block body %}
 	{% endblock %}
 
-	{% include 'js.html' %}
+	{% include '/themes/default/js.html' %}
 	{% block js %}
 	{% endblock %}
 </body>
