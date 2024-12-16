@@ -1,5 +1,5 @@
 {% block js %}
 {% for element in javascript }
-<script {% if element.src %}src="{{ element.src }}"{% endif %} {% if element.type == "module" %}type="module"{% endif %}>{% element.innerText %}</script>
+<script {% if element.src %}src="{{ element.src }}"{% endif %} {% if element.type %}type="{{ element.type }}"{% endif %}>{% element.innerText %}</script>
 {% endfor %}
 {% endblock %}
