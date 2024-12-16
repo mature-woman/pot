@@ -8,7 +8,8 @@ namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 use ${REPO_OWNER}\${REPO_NAME}\controllers\core;
 
 // Framework for PHP
-use mirzaev\minimal\http\enumerations\status;
+use mirzaev\minimal\http\enumerations\content,
+  mirzaev\minimal\http\enumerations\status;
 
 /**
  * Index
