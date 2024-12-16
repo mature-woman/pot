@@ -1,6 +1,8 @@
 @charset "UTF-8";
 
 :root {
+	--gap: min(12px, 1rem);
+
 	/* font-family: , system-ui, sans-serif; */
 	font-family: "dejavu";
 	text-decoration: none;
