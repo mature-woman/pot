@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 
 // Files of the project
-use ${REPO_OWNER}\${REPO_NAME}\views\manager,
+use ${REPO_OWNER}\${REPO_NAME}\views\templater,
 	${REPO_OWNER}\${REPO_NAME}\models\core as models,
 	${REPO_OWNER}\${REPO_NAME}\models\session,
 	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
