@@ -14,10 +14,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1); */
 
 // Initializing path to the public directory 
-define('PUBLIC', __DIR__);
+define('INDEX', __DIR__);
 
 // Initializing path to the project root directory
-define('ROOT',  PUBLIC . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 // Initializing path to the directory of views 
 define('VIEWS', realpath('..' . DIRECTORY_SEPARATOR . 'views'));
