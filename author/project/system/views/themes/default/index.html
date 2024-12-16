@@ -1,12 +1,10 @@
-{% extends "core.html" %}
+{% extends "/themes/default/core.html" %}
 
-{% use "/themes/default/core.html" with css as core_css, body as core, js as core_js %}
 {% use "/themes/default/header.html" with css as header_css, body as header, js as header_js %}
 {% use "/themes/default/aside.html" with css as aside_css, body as aside, js as aside_js %}
 {% use "/themes/default/footer.html" with css as footer_css, body as footer, js as footer_js %}
 
 {% block css %}
-{{ block('core_css') }}
 {{ block('header_css') }}
 {{ block('aside_css') }}
 {{ block('footer_css') }}
@@ -27,5 +25,4 @@
 {{ block('footer_js') }}
 {{ block('header_js') }}
 {{ block('aside_js') }}
-{{ block('core_js') }}
 {% endblock %}
