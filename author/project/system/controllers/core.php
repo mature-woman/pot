@@ -72,18 +72,18 @@ class core extends controller
 	/**
 	 * Constructor
 	 *
-	 * @param minimal $$minimal Instance of the MINIMAL
+	 * @param minimal $$core Instance of the MINIMAL
 	 * @param bool $$initialize Initialize a controller?
 	 *
 	 * @return void
 	 */
-	public function __construct(minimal $$minimal, bool $$initialize = true)
+	public function __construct(minimal $$core, bool $$initialize = true)
 	{
 		// Blocking requests from CloudFlare (better to write this blocking into nginx config file)
 		if (isset($$_SERVER['HTTP_USER_AGENT']) && $$_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
 		// For the extends system
-		parent::__construct(core: $$minimal);
+		parent::__construct(core: $$core);
 
 		if ($$initialize) {
 			// Requestet initializing
