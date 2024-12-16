@@ -38,7 +38,7 @@ require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $$core = new core(namespace: __NAMESPACE__);
 
 // Initializing routes
-$$router->router
+$$core->router
 	->write('/', new route('index', 'index'), 'GET')
 ;
 
