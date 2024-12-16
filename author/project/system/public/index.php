@@ -22,9 +22,6 @@ define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' 
 // Initializing path to the directory of views 
 define('VIEWS', realpath('..' . DIRECTORY_SEPARATOR . 'views'));
 
-// Initializing path to the directory of storage 
-define('STORAGE', realpath('..' . DIRECTORY_SEPARATOR . 'storage'));
-
 // Initializing path to the directory of settings 
 define('SETTINGS', realpath('..' . DIRECTORY_SEPARATOR . 'settings'));
 
