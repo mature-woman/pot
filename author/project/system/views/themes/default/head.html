@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block css %}
+{% for element in css %}
+<link type="text/css" rel="stylesheet" {% if element.href %}href="{{ element.href }}" {% endif %} />
+{% endfor %}
 <link type="text/css" rel="stylesheet" href="/css/themes/default/system.css" />
 <link type="text/css" rel="stylesheet" href="/css/themes/default/header.css" />
 <link type="text/css" rel="stylesheet" href="/css/themes/default/main.css" />
