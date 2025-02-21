@@ -17,19 +17,19 @@ ini_set('display_startup_errors', 1); */
 define('INDEX', __DIR__);
 
 // Initializing path to the project root directory
-define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+define('ROOT',  INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 // Initializing path to the directory of views 
-define('VIEWS', realpath('..' . DIRECTORY_SEPARATOR . 'views'));
+define('VIEWS', INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . 'views');
 
 // Initializing path to the directory of settings 
-define('SETTINGS', realpath('..' . DIRECTORY_SEPARATOR . 'settings'));
+define('SETTINGS', INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . 'settings');
+
+// Initializing system settings 
+require SETTINGS . DIRECTORY_SEPARATOR . 'system.php';
 
 // Initializing path to the directory of the storage 
-define('STORAGE', realpath('..' . DIRECTORY_SEPARATOR . 'storage'));
-
-// Initializing default theme for the views templater
-define('THEME', 'default');
+define('STORAGE', INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . 'storage');
 
 // Initializing dependencies
 require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
