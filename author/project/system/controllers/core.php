@@ -21,25 +21,18 @@ use mirzaev\minimal\core as minimal,
  *
  * @package ${REPO_OWNER}\${REPO_NAME}\controllers
  *
- * @param session $$session Instance of the session
  * @param language $$language Language
  * @param response $$response Response
  * @param array $$errors Registry of errors
  *
- * @method void __construct(minimal $$minimal, bool $$initialize) Constructor
+ * @method void __construct(minimal $$minimal) Constructor
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
  * @author ${REPO_OWNER} <mail@domain.zone>
  */
 class core extends controller
 {
-	/**
-	 * Session
-	 * 
-	 * @var session|null $$session Instance of the session
-	 */
-	protected readonly session $$session;
-
 	/**
 	 * Language
 	 *
@@ -65,8 +58,7 @@ class core extends controller
 	 * @var array $$errors Registry of errors
 	 */
 	protected array $$errors = [
-		'session' => [],
-		'account' => []
+		'system' => []
 	];
 
 	/**
@@ -77,50 +69,12 @@ class core extends controller
 	 *
 	 * @return void
 	 */
-	public function __construct(minimal $$core, bool $$initialize = true)
+	public function __construct(minimal $$core)
 	{
 		// Blocking requests from CloudFlare (better to write this blocking into nginx config file)
 		if (isset($$_SERVER['HTTP_USER_AGENT']) && $$_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
 		// For the extends system
 		parent::__construct(core: $$core);
-
-		if ($$initialize) {
-			// Requestet initializing
-
-			// Initializing core of the models
-			new models();
-
-			// Initializing of the date until which the session will be active
-			$$expires = strtotime('+1 week');
-
-			// Initializing of default value of hash of the session
-			$$_COOKIE["session"] ??= null;
-
-			// Initializing of session
-			$$this->session = new session($$_COOKIE["session"], $$expires, $$this->errors['session']);
-
-			// Handle a problems with initializing a session
-			if (!empty($$this->errors['session'])) die;
-			else if ($$_COOKIE["session"] !== $$this->session->hash) {
-				// Hash of the session is changed (implies that the session has expired and recreated)
-
-				// Write a new hash of the session to cookies
-				setcookie(
-					'session',
-					$$this->session->hash,
-					[
-						'expires' => $$expires,
-						'path' => '/',
-						'secure' => true,
-						'httponly' => true,
-						'samesite' => 'strict'
-					]
-				);
-			}
-
-			// Initializing of preprocessor of views
-			$$this->view = new templater($$this->session);
-		}
 	}
 }

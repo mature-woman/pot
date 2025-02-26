@@ -31,6 +31,9 @@ require SETTINGS . DIRECTORY_SEPARATOR . 'system.php';
 // Initializing path to the directory of the storage 
 define('STORAGE', INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . 'storage');
 
+// Initializing path to the databases directory
+define('DATABASES', INDEX . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'databases');
+
 // Initializing dependencies
 require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace ${REPO_OWNER}\${REPO_NAME}\views;
 
 // Files of the project
-use ${REPO_OWNER}\${REPO_NAME}\models\session,
-	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
+use ${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
 
 // Framework for PHP
 use mirzaev\minimal\controller;
@@ -30,10 +29,11 @@ use ArrayAccess as array_access,
  * @param twig $$twig Instance of the twig templater
  * @param array $$variables Registry of view global variables
  *
- * @method void __construct(?session &$$session) Constructor
+ * @method void __construct() Constructor
  * @method string|null render(string $$file, ?array $$variables) Render the HTML-document
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
  * @author ${REPO_OWNER} <mail@domain.zone>
  */
 final class templater extends controller implements array_access
@@ -55,11 +55,9 @@ final class templater extends controller implements array_access
 	/**
 	 * Constructor of an instance
 	 *
-	 * @param ?session $$session Instance of the session in ArangoDB
-	 *
 	 * @return void
 	 */
-	public function __construct(?session &$$session = null)
+	public function __construct()
 	{
 		// Initializing the Twig instance
 		$$this->twig = new twig(new FilesystemLoader(VIEWS));
@@ -68,7 +66,6 @@ final class templater extends controller implements array_access
 		$$this->twig->addGlobal('theme', 'default');
 		$$this->twig->addGlobal('server', $$_SERVER);
 		$$this->twig->addGlobal('cookies', $$_COOKIE);
-		if (!empty($$session->status())) $$this->twig->addGlobal('session', $$session);
 		$$this->twig->addGlobal('language', $$language = $$session?->buffer['language'] ?? language::en);
 	}
 

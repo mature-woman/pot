@@ -21,6 +21,7 @@ use mirzaev\minimal\http\enumerations\content,
  * @method null index() Main page
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
+ * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
  * @author ${REPO_OWNER} <mail@domain.zone>
  */
 final class index extends core
@@ -31,7 +32,7 @@ final class index extends core
 	 * @var array $$errors Registry of errors
 	 */
 	protected array $$errors = [
-		'session' => []
+		'system' => []
 	];
 
 	/**
