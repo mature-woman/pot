@@ -29,15 +29,15 @@ enum language
 	 *
 	 * @return string Translated label of the language
 	 */
-	public function label(?language $language = language::en): string
+	public function label(?language $$language = language::en): string
 	{
 		// Exit (success)
-		return match ($this) {
-			language::en =>	match ($language) {
+		return match ($$this) {
+			language::en =>	match ($$language) {
 				language::en => 'English',
 				language::ru => 'Английский'
 			},
-			language::ru => match ($language) {
+			language::ru => match ($$language) {
 				language::en => 'Russian',
 				language::ru => 'Русский'
 			}
@@ -54,7 +54,7 @@ enum language
 	public function flag(): string
 	{
 		// Exit (success)
-		return match ($this) {
+		return match ($$this) {
 			language::en => '🇺🇸',
 			language::ru => '🇷🇺'		
 		};
