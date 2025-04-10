@@ -74,6 +74,9 @@ class core extends controller
 		// Blocking requests from CloudFlare (better to write this blocking into nginx config file)
 		if (isset($$_SERVER['HTTP_USER_AGENT']) && $$_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
+		// Initializing the view template engine instance
+		$$this->view = new templater($$this->session);
+
 		// For the extends system
 		parent::__construct(core: $$core);
 	}
