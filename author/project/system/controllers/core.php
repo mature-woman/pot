@@ -7,7 +7,6 @@ namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 // Files of the project
 use ${REPO_OWNER}\${REPO_NAME}\views\templater,
 	${REPO_OWNER}\${REPO_NAME}\models\core as models,
-	${REPO_OWNER}\${REPO_NAME}\models\session,
 	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
 
 // Framework for PHP
@@ -75,7 +74,7 @@ class core extends controller
 		if (isset($$_SERVER['HTTP_USER_AGENT']) && $$_SERVER['HTTP_USER_AGENT'] === 'nginx-ssl early hints') return status::bruh->label;
 
 		// Initializing the view template engine instance
-		$$this->view = new templater($$this->session);
+		$$this->view = new templater();
 
 		// For the extends system
 		parent::__construct(core: $$core);
