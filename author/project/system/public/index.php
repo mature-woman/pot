@@ -34,6 +34,9 @@ define('STORAGE', INDEX . DIRECTORY_SEPARATOR	. '..' . DIRECTORY_SEPARATOR . 'st
 // Initializing path to the databases directory
 define('DATABASES', INDEX . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'databases');
 
+// Initializing path to the localizations directory
+define('LOCALIZATIONS', INDEX . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'localizations');
+
 // Initializing dependencies
 require ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
