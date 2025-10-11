@@ -23,7 +23,7 @@
 	},
 	"require": {
 		"php": "^8.4",
-		"mirzaev/minimal": "^3.6",
+		"mirzaev/minimal": "^3.7",
 		"mirzaev/baza": "^3.3",		
 		"twig/twig": "^3.2",
 		"twig/extra-bundle": "^3.7",
