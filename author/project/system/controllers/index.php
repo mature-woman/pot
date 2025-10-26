@@ -22,7 +22,6 @@ use mirzaev\minimal\http\enumerations\content,
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
  * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
- * @author ${REPO_OWNER} <mail@domain.zone>
  */
 final class index extends core
 {

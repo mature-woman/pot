@@ -20,7 +20,6 @@ use exception;
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
  * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
- * @author ${REPO_OWNER} <mail@domain.zone>
  */
 class core extends model
 {

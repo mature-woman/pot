@@ -6,8 +6,10 @@ namespace ${REPO_OWNER}\${REPO_NAME}\controllers;
 
 // Files of the project
 use ${REPO_OWNER}\${REPO_NAME}\views\templater,
-	${REPO_OWNER}\${REPO_NAME}\models\core as models,
-	${REPO_OWNER}\${REPO_NAME}\models\enumerations\language;
+	${REPO_OWNER}\${REPO_NAME}\models\core as models;
+
+// Library for languages support
+use mirzaev\languages\language;
 
 // Framework for PHP
 use mirzaev\minimal\core as minimal,
@@ -28,7 +30,6 @@ use mirzaev\minimal\core as minimal,
  *
  * @license http://www.wtfpl.net/ Do What The Fuck You Want To Public License
  * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
- * @author ${REPO_OWNER} <mail@domain.zone>
  */
 class core extends controller
 {
