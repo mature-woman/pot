@@ -26,10 +26,14 @@
 		"mirzaev/minimal": "^3.7",
 		"mirzaev/baza": "^3.3",		
 		"mirzaev/languages": "^1",		
-		"mirzaev/currencies": "^1",		
 		"twig/twig": "^3.2",
 		"twig/extra-bundle": "^3.7",
 		"twig/intl-extra": "^3.10"
+	},
+	"suggest": {
+		"mirzaev/files": "Easy working with files",
+		"mirzaev/currencies": "Easy currencies integration"
+
 	},
 	"autoload": {
 		"psr-4": {
