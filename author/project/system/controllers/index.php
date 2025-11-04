@@ -41,8 +41,8 @@ final class index extends core
 	 */
 	public function index(): null
 	{
-		if (str_contains($$this->request->headers['accept'], content::any->value)) {
-			// Request for any response
+		if (str_contains($$this->request->headers['accept'] ?? '', content::html->value)) {
+			// Request for HTML response
 
 			// Render page
 			$$page = $$this->view->render('index.html');
