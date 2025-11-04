@@ -10,6 +10,6 @@ fi
 
 if [ -e ${REPO_OWNER}/${REPO_NAME}/system/settings/*.sample ]; then
 	for i in ${REPO_OWNER}/${REPO_NAME}/system/settings/*.sample; do
-    cp "$i" "${i/.sample/}";
+    cp "$$i" "$${i/.sample/}";
   done
 fi
