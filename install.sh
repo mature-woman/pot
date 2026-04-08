@@ -11,7 +11,7 @@ fi
 for i in ${REPO_OWNER}/${REPO_NAME}/system/settings/*.sample; do
   echo $$i;
   if [ ! -f "$${i/.sample/}" ]; then
-    cp "$$i" "$${i/.sample/}";
+    cp -n "$$i" "$${i/.sample/}";
     echo $${i/.sample/};
   fi
 done
